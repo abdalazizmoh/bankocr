@@ -2,6 +2,7 @@
 import sys
 from os import path
 
+# Map the value of each digit in three-line as one string to its number 
 DIGIT_VALUES = {
     ' _ | ||_|': 0,
     '     |  |': 1,
@@ -14,6 +15,8 @@ DIGIT_VALUES = {
     ' _ |_||_|': 8,
     ' _ |_| _|': 9
 }
+
+# Open a file provided or ask for the file path
 def read_file_path():
     try:
         path = sys.argv[1]
@@ -21,6 +24,7 @@ def read_file_path():
         path = input('Please, Enter the file path: ')
     return path
 
+# retrive the date from the file provide
 def retrive_data_from_file(path):
     try:
         with open(path, 'r') as f:
@@ -30,6 +34,8 @@ def retrive_data_from_file(path):
         print('Not valid input')
         sys.exit()
 
+# start read every 4 lines, three-line which contain the digit number
+# on each line combines three char which consist of the digit number to one string
 def readocr(lines):
     list_numbers = []
     for line_number, line in enumerate(lines):
@@ -48,10 +54,12 @@ def readocr(lines):
                 list_numbers.append("Error in data")
     return list_numbers
 
+#Print the list of outputs
 def print_list_numbers(list_numbers):
     for number in list_numbers:
         print(number)
-    
+
+# Call the functions in main  
 if __name__ == "__main__":
     path = read_file_path()
     lines = retrive_data_from_file(path)

@@ -1,7 +1,7 @@
 #!/bin/python
 import sys
+from os import path
 
-# Map the value of each digit in three-line as one string to its number 
 DIGIT_VALUES = {
     ' _ | ||_|': 0,
     '     |  |': 1,
@@ -14,34 +14,46 @@ DIGIT_VALUES = {
     ' _ |_||_|': 8,
     ' _ |_| _|': 9
 }
+def read_file_path():
+    try:
+        path = sys.argv[1]
+    except IndexError as e:
+        path = input('Please, Enter the file path: ')
+    return path
 
-# Open a file provided or ask for the file
-try:
-    path = sys.argv[1]
-except IndexError as e:
-    path = input('Please, Enter the file path: ')
+def retrive_data_from_file(path):
+    try:
+        with open(path, 'r') as f:
+            lines = f.read().splitlines()
+        return lines
+    except IOError:
+        print('Not valid input')
+        sys.exit()
 
-try:
-    path
-except NameError:
-    print('Not valid input')
-else:
-    with open(path, 'r') as f:
-        lines = f.read().splitlines()
+def readocr(lines):
+    list_numbers = []
+    for line_number, line in enumerate(lines):
+        if line_number % 4 == 0:
+            completeNumber = ''
+            for number_start in range(0, len(line), 3):
+                number_end = number_start + 3
+                number = lines[line_number][number_start:number_end] + \
+                    lines[line_number + 1][number_start:number_end] + \
+                    lines[line_number + 2][number_start:number_end]
+                completeNumber += str(DIGIT_VALUES.get(number))
+            try:
+                int(completeNumber)
+                list_numbers.append(completeNumber)
+            except:
+                list_numbers.append("Error in data")
+    return list_numbers
 
-# start read every 4 lines, three-line which contain the digit number
-# on each line combines three char which consist of the digit number to one string
-for line_number, line in enumerate(lines):
-    if line_number % 4 == 0:
-        completeNumber = ''
-        for number_start in range(0, len(line), 3):
-            number_end = number_start + 3
-            number = lines[line_number][number_start:number_end] + \
-                lines[line_number + 1][number_start:number_end] + \
-                lines[line_number + 2][number_start:number_end]
-            completeNumber += str(DIGIT_VALUES.get(number))
-        try:
-            # Print the number if it is valid
-            print(int(completeNumber))
-        except :
-            print("Error in data")
+def print_list_numbers(list_numbers):
+    for number in list_numbers:
+        print(number)
+    
+if __name__ == "__main__":
+    path = read_file_path()
+    lines = retrive_data_from_file(path)
+    list_numbers = readocr(lines)
+    print_list_numbers(list_numbers)
